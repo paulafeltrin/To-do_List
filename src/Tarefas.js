@@ -78,21 +78,23 @@ button{
 export default class Tarefas extends React.Component{
     state = {
         tarefa: "",
-        listaTarefa: [],
+        listaTarefa: [], //array, lista de tarefas
     }
 
+    //handleChange //método que recebe um objeto js
     buscarTarefas = (event) => {
         this.setState({
             tarefa: event.target.value
         })
     }
 
+    //handleChange //listaTarefa recebe ela mesma + tarefa que quero adicionar
     addTarefas = () => {
-        if(this.state.tarefa.length > 0){
+        if(this.state.tarefa !== ""){
             this.setState({
                 listaTarefa: this.state.listaTarefa.concat({
-                    tarefa: this.state.tarefa,
-                    id: Date.now() //traz numeração específica
+                    tarefa: this.state.tarefa, 
+                    id: Date.now() //traz numeração específica e aleatória
                 }),
                 tarefa: ""
             })
@@ -100,19 +102,29 @@ export default class Tarefas extends React.Component{
     }
 
     removerTarefa = (id) => {
-        this.setState({
-            listaTarefa: this.state.listaTarefa.filter((item) => {
-                return item.id !== id
+        this.setState({ //setState é um método e, neste caso, recebe uma lógica js (objeto{})
+            listaTarefa: this.state.listaTarefa.filter((item) => { //=> é como se fosse um return
+                return item.id !== id //retorne todos os id diferentes daquele q cliquei
             })
         })
     }
-
+    addEnter = (event) => {
+        if(this.state.tarefa.length > 0 && event.key === "Enter"){
+            this.setState({
+                listaTarefa: this.state.listaTarefa.concat({
+                    tarefa: this.state.tarefa, 
+                    id: Date.now() //traz numeração específica e aleatória
+                }),
+                tarefa: ""
+            })
+        }
+    }
     render(){
         return (
             <Listatarefas>
                 <GlobalStyle />
                 <h1>Lista de Tarefas</h1>
-                <input onChange={this.buscarTarefas} value={this.state.tarefa}/>
+                <input onChange={this.buscarTarefas} onKeyPress={this.addEnter} value={this.state.tarefa}/>
                 <Add onClick={this.addTarefas}>Adicionar</Add>
                 <Listadiv>
                     {this.state.listaTarefa.map((item) => (
